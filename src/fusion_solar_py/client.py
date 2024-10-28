@@ -414,23 +414,24 @@ class FusionSolarClient:
         """Retrieve the data for one day. 
         :plant_id: id of the plant, e.g."NE=36194084": string
         :date: date of the day to query: datetime.date 
-        :return: The daily data as a DayData object
+        :   return: The daily data as a DayData object
         """
         if date is None:
             date = datetime.now()
         #print(date)
         #date='2023-11-19 00:00:00'
-        url = f"https://region02eu5.fusionsolar.huawei.com/rest/pvms/web/station/v1/overview/energy-balance"
+        #url = f"https://region02eu5.fusionsolar.huawei.com/rest/pvms/web/station/v1/overview/energy-balance"
+        #url = f"https://uni002eu5.fusionsolar.huawei.com/rest/pvms/web/station/v1/overview/energy-balance"
+        url = f"https://uni002eu5.fusionsolar.huawei.com/rest/pvms/web/station/v2/overview/energy-balance"
         params = {
             "stationDn": plant_id,
             "timeDim": 2,
             "queryTime": round(time.time()  * 1000),
-            "timeZone": 1,
+            "timeZone": 2.0,
             "timeZoneStr": 'Europe/Berlin',
             "dateStr": date.replace(hour=0, minute=0, second=0, microsecond=0),
             "_": round(time.time() * 1000),
         }
-        
         r = self._session.get(url=url, params=params)
         r.raise_for_status()
         data_obj = r.json()
@@ -516,9 +517,9 @@ class FusionSolarClient:
             }
         )
         r.raise_for_status()
-
-        obj_tree = r.json()
-
+        import pdb; pdb.set_trace()
+        
+        obj_tree = r.json() 
         if not obj_tree["success"]:
             raise FusionSolarException("Failed to retrieve station list")
 
